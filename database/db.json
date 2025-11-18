@@ -18,12 +18,12 @@
     },
     {
       "id": "2034",
-      "nomeUsuario": "Gabriel",
+      "nomeUsuario": "henrique",
       "senhaUsuario": "peidoleite",
       "saldoUsuario": 0,
-      "idadeUsuario": "303",
+      "idadeUsuario": "23",
       "emailUsuario": "michel@viadin.com",
-      "imagemUsuario": "150,"
+      "imagemUsuario": "https://avatars.githubusercontent.com/u/157776275?v=4"
     },
     {
       "id": "bacb",
@@ -51,6 +51,15 @@
       "idadeUsuario": "22",
       "emailUsuario": "karen@gmail.com",
       "imagemUsuario": "https://media.licdn.com/dms/image/v2/D4D03AQFKKA47-AZS9w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1714400661029?e=1764806400&v=beta&t=aEQNBvzAGdDmCWkuNUZlXVS_rSk4UB3huP5PzDReg50"
+    },
+    {
+      "id": "150b",
+      "nomeUsuario": "Henrique muito ticudo",
+      "senhaUsuario": "12345",
+      "saldoUsuario": 0,
+      "idadeUsuario": "23",
+      "emailUsuario": "henriquefoda123@gmail.com",
+      "imagemUsuario": "https://avatars.githubusercontent.com/u/157776275?v=4"
     }
   ],
   "metas": [
@@ -61,7 +70,7 @@
       "titulo": "Paris",
       "valorAlvo": 10000,
       "periodoConclusao": "6",
-      "status": "ativo",
+      "status": "Concluída",
       "linkConvite": "8350",
       "imagem": "https://images.pexels.com/photos/386009/pexels-photo-386009.jpeg?_gl=1*1lfkqwv*_ga*NzMwMTQ0NDUzLjE3NjI5NjA3MDI.*_ga_8JE65Q40S6*czE3NjI5NjA3MDEkbzEkZzEkdDE3NjI5NjA3MTYkajQ1JGwwJGgw"
     },
@@ -174,6 +183,17 @@
       "status": "Concluída",
       "linkConvite": "4563",
       "imagem": "https://images.pexels.com/photos/386009/pexels-photo-386009.jpeg?_gl=1*1lfkqwv*_ga*NzMwMTQ0NDUzLjE3NjI5NjA3MDI.*_ga_8JE65Q40S6*czE3NjI5NjA3MDEkbzEkZzEkdDE3NjI5NjA3MTYkajQ1JGwwJGgw"
+    },
+    {
+      "id": "fb5d",
+      "liderId": "2034",
+      "tipoMeta": "Viagem",
+      "titulo": "Ziriguidum",
+      "valorAlvo": 2000,
+      "periodoConclusao": "3",
+      "status": "ativo",
+      "linkConvite": "8002",
+      "imagem": "https://images.pexels.com/photos/386009/pexels-photo-386009.jpeg?_gl=1*1lfkqwv*_ga*NzMwMTQ0NDUzLjE3NjI5NjA3MDI.*_ga_8JE65Q40S6*czE3NjI5NjA3MDEkbzEkZzEkdDE3NjI5NjA3MTYkajQ1JGwwJGgw"
     }
   ],
   "participacoes": [
@@ -228,6 +248,41 @@
       "id": "519c",
       "metaId": "a544",
       "usuarioId": "8a6c"
+    },
+    {
+      "id": "e7d3",
+      "metaId": "4a6d",
+      "usuarioId": "2034"
+    },
+    {
+      "id": "72d2",
+      "metaId": "fb5d",
+      "usuarioId": "2034"
+    },
+    {
+      "id": "0829",
+      "metaId": "74d7",
+      "usuarioId": "2034"
+    },
+    {
+      "id": "6b94",
+      "metaId": "74d7",
+      "usuarioId": "150b"
+    },
+    {
+      "id": "5a45",
+      "metaId": "d442",
+      "usuarioId": "150b"
+    },
+    {
+      "id": "0e32",
+      "metaId": "08e3",
+      "usuarioId": "150b"
+    },
+    {
+      "id": "e0ac",
+      "metaId": "4a6d",
+      "usuarioId": "150b"
     }
   ],
   "contribuicoes": [
@@ -335,6 +390,48 @@
       "usuarioId": "8a6c",
       "valor": 1000,
       "data": "2025-11-17T03:33:50.308Z"
+    },
+    {
+      "id": "965c",
+      "metaId": "4a6d",
+      "usuarioId": "2034",
+      "valor": 500,
+      "data": "2025-11-18T22:45:36.286Z"
+    },
+    {
+      "id": "287d",
+      "metaId": "fb5d",
+      "usuarioId": "2034",
+      "valor": 500,
+      "data": "2025-11-18T22:53:38.144Z"
+    },
+    {
+      "id": "8546",
+      "metaId": "74d7",
+      "usuarioId": "2034",
+      "valor": 1000,
+      "data": "2025-11-18T22:54:50.185Z"
+    },
+    {
+      "id": "ed17",
+      "metaId": "74d7",
+      "usuarioId": "150b",
+      "valor": 5000,
+      "data": "2025-11-18T22:57:56.154Z"
+    },
+    {
+      "id": "d834",
+      "metaId": "4a6d",
+      "usuarioId": "150b",
+      "valor": 925,
+      "data": "2025-11-18T23:00:00.847Z"
+    },
+    {
+      "id": "6b69",
+      "metaId": "74d7",
+      "usuarioId": "150b",
+      "valor": 4000,
+      "data": "2025-11-18T23:00:39.894Z"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import Header from "../../components/Layout/Header"
 import Titulo from "../../components/Layout/Titulo"
 
@@ -41,7 +41,7 @@ function Pesquisa() {
         return;
     }
     
-    const userIdLogado = usuarioLogado?.id;
+    const userIdLogado = usuarioLogado.id;
     
     if (!userIdLogado) {
       alert("Você precisa estar logado para entrar em uma meta.");
@@ -71,7 +71,7 @@ function Pesquisa() {
       }
       
     
-      navigate(`/metas/${metaId}`) 
+      navigate(`/meta-detalhes/${metaId}`) 
 
     } catch (erro) {
       console.log("Erro ao processar participação ou navegar: ", erro.message)
@@ -112,7 +112,7 @@ function Pesquisa() {
             placeholder=""
             {...register("pesquisa")}
           />
-          <input className="p-2 bg-verde text-white font-bold no-underline rounded-lg border-0" type="submit" value="Pesquisar" />
+          
         </form>
 
         <section className=''>
