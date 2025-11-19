@@ -7,6 +7,7 @@ import { PiMoneyWavyFill } from "react-icons/pi";
 
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
+import BotaoVerde from "../../components/Botoes/BotaoVerde";
 import FormatarReais from "../../components/Layout/FormatarReais";
 
 // INICIA A FUNÇÃO PRINCIPAL ---------------------------------------------------
@@ -22,6 +23,7 @@ export function MetaDetalhes() {
     const [participantes, setParticipantes] = useState([]);
     const [contribuicoes, setContribuicoes] = useState([]);
     const [error, setError] = useState(null);
+    const [totalContribuido, setTotalContribuido] = useState(0);
 
     //
     useEffect(() => {
@@ -76,7 +78,13 @@ export function MetaDetalhes() {
             .catch((err) => setError(err.message));
     }, [id, usuarioLogado]);
 
-    // Função para remover participante
+    // Recalcula o total contribuído sempre que a lista de contribuições mudar
+    useEffect(() => {
+        const total = contribuicoes.reduce((acc, curr) => acc + (Number(curr.valor) || 0), 0);
+        setTotalContribuido(total);
+    }, [contribuicoes]);
+
+    // REMOVENDO PARTICIPANTE ------------------------------------------------------------------
     const removerParticipante = async (p) => {
         try {
             const participacoes = await fetch(
@@ -90,11 +98,13 @@ export function MetaDetalhes() {
                 setParticipantes(participantes.filter((part) => part.id !== p.id));
             }
 
+            // Reembolsa o participante com base nas contribuições feitas
             const contribsDoAlvo = contribuicoes.filter((c) => c.usuarioId === p.id);
             const totalDoAlvo = contribsDoAlvo.reduce((acc, item) => acc + item.valor, 0);
 
             if (totalDoAlvo > 0) {
-                const usuarioData = await fetch(`http://localhost:3000/usuarios/${p.id}`).then((res) => res.json());
+                const usuarioData = await fetch(`http://localhost:3000/usuarios/${p.id}`)
+                .then((res) => res.json());
                 const novoSaldo = usuarioData.saldoUsuario + totalDoAlvo * 0.2;
 
                 await fetch(`http://localhost:3000/usuarios/${p.id}`, {
@@ -105,6 +115,7 @@ export function MetaDetalhes() {
                     body: JSON.stringify({ saldoUsuario: novoSaldo }),
                 });
 
+                // Registra a contribuição de penalidade (80% do valor) com usuárioId "0000"
                 await fetch(`http://localhost:3000/contribuicoes`, {
                     method: "POST",
                     headers: {
@@ -125,6 +136,7 @@ export function MetaDetalhes() {
                     method: "DELETE",
                 });
             }
+            setContribuicoes(contribuicoes.filter((c) => c.usuarioId !== p.id));
         } catch (error) {
             console.error("Erro ao remover participante:", error);
             alert("Erro ao remover participante.");
@@ -139,8 +151,14 @@ export function MetaDetalhes() {
         return <p>Carregando detalhes da meta...</p>;
     }
 
+    // Soma da contribuição do usuário logado
     const contribuicaoUsuarioLogado = contribuicoes
         .filter((c) => c.usuarioId === usuarioLogado.id)
+        .reduce((acc, curr) => acc + curr.valor, 0);
+
+    // Somando contribuições de penalidades (usuárioId "0000")
+    const contribuicoesdePenalidades = contribuicoes
+        .filter((c) => c.usuarioId === "0000")
         .reduce((acc, curr) => acc + curr.valor, 0);
 
     return (
@@ -155,9 +173,11 @@ export function MetaDetalhes() {
                 />
                 {meta.status === "Concluída" && <p><strong>Status: {meta.status}</strong></p>}
                 <p><strong>Valor Alvo:</strong> <FormatarReais valor={meta.valorAlvo} /></p>
-                <p><strong>Contribuído:</strong> <FormatarReais valor={
-                    contribuicoes.reduce((acc, curr) => acc + curr.valor, 0)
-                } /></p>
+                <p><strong>Contribuído:</strong> <FormatarReais valor={totalContribuido} />
+                {contribuicoesdePenalidades > 0 && (
+                <span className="italic">{" [Saldo "}<FormatarReais valor={contribuicoesdePenalidades} />{"]"}</span>)}
+                </p>
+                
                 <p><strong>Período para Conclusão:</strong> {meta.periodoConclusao} meses</p>
                 <p><strong>Líder:</strong> {lider.nomeUsuario}</p>
                 <p><strong>Senha Convite:</strong> <span className="bg-azul px-1 font-semibold rounded-sm text-white">{meta.linkConvite}</span></p>
@@ -204,6 +224,9 @@ export function MetaDetalhes() {
                         })}
                     </ul>
                 </div>
+            </div>
+            <div className="flex justify-center m-4">
+            <BotaoVerde link={"/contribuir"} texto={"Contribuir"} type={"button"}/>
             </div>
             <Footer />
         </div>

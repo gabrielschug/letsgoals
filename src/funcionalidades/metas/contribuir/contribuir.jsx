@@ -1,6 +1,6 @@
 // REACT E NEXT IMPORTS ---------------------------------------------------------
 import React, { useEffect, useState } from 'react'
-import { set, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useAuth } from '../../../context/usuarioContext'
 import { useNavigate } from 'react-router'
 
@@ -15,14 +15,17 @@ import Subtitulo from '../../../components/Layout/Subtitulo'
 export default function Contribuir() {
 
   // VARIAVEIS E FUNÇÕES GERAIS -------------------------------------------------
-  const { usuarioLogado, isAuthLoading } = useAuth()
+  const { usuarioLogado, isAuthLoading, login, logout } = useAuth()
   const { register, reset, handleSubmit, formState: { errors } } = useForm()
   const navigate = useNavigate()
+
   const [metasUsuario, setMetasUsuario] = React.useState([])
   const [saldoMeta, setSaldoMeta] = useState(0);
   const [metaContribuida, setMetaContribuida] = useState('');
   const [mostrarMensagemContribuicao, setMostrarMensagemContribuicao] = useState(false);
   const [valorAlvoMeta, setValorAlvoMeta] = useState(0);
+  const [saldoDoUsuario, setSaldoDoUsuario] = useState(usuarioLogado.saldoUsuario);
+  const [usuario, setUsuario] = useState(usuarioLogado);
 
   // INICIALIZAÇÃO DA PÁGINA ---------------------------------------------------
   useEffect(() => {
@@ -65,73 +68,9 @@ export default function Contribuir() {
     }
   }, [isAuthLoading, usuarioLogado, navigate]);
 
-
-
-  // REGISTRO DA CONTRIBUIÇÃO ----------------------------------------------------
-
-  async function registrarContribuicao(data) {
-    if (!usuarioLogado) return;
-
-    const meta = data.meta;
-    const valor = parseFloat(data.valor);
-    const datahora = new Date().toISOString();
-    const saldoUsuarioAtualizado = usuarioLogado.valor - saldoUsuario;
-
-    try {
-      const resposta = await fetch("http://localhost:3000/contribuicoes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          metaId: meta,
-          usuarioId: usuarioLogado.id,
-          valor,
-          data: datahora,
-        }),
-      });
-
-      if (!resposta.ok) {
-        throw new Error("Erro ao registrar contribuição");
-      }
-
-      const saldoAtualizado = saldoMeta + valor;
-      const diferenca = Math.abs(saldoAtualizado - valorAlvoMeta);
-
-      // Verifica se o saldo atualizado é maior ou igual ao valor alvo, considerando uma margem de erro para números decimais
-      if (saldoAtualizado >= valorAlvoMeta || diferenca < 0.01) {
-        await fetch(`http://localhost:3000/metas/${meta}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: "Concluída" }),
-        });
-      }
-
-      // Atualiza o saldo do usuário diretamente com saldoUsuarioAtualizado
-      await fetch(`http://localhost:3000/usuarios/${usuarioLogado.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ saldoUsuario: saldoUsuarioAtualizado }),
-      });
-
-      const metaContribuidaData = metasUsuario.find((m) => m.id === meta);
-      setMetaContribuida(metaContribuidaData?.titulo || "");
-      setValorAlvoMeta(metaContribuidaData?.valorAlvo || 0);
-
-      setMostrarMensagemContribuicao(true);
-      setTimeout(() => setMostrarMensagemContribuicao(false), 3000);
-    } catch (error) {
-      console.error("Erro ao registrar contribuição:", error);
-    } finally {
-      reset();
-    }
-  }
-
-  // Função para atualizar o saldo da meta ao mudar a seleção
+  
+  // ALTERANDO VISUALIZAÇÃO DE META ----------------------------------------------------
+  
   const selectMetaValor = (event) => {
     const idMeta = event.target.value;
 
@@ -148,6 +87,97 @@ export default function Contribuir() {
       });
   };
 
+
+  // REGISTRO DA CONTRIBUIÇÃO ----------------------------------------------------
+  async function registrarContribuicao(data) {
+
+    // Variáveis da contribuição
+    const meta = data.meta;
+    const valor = parseFloat(data.valor);
+    // Outras variáveis
+    const datahora = new Date().toISOString();
+  const saldoUsuario = usuarioLogado.saldoUsuario;
+
+    // CRIANDO CONTRIBUIÇÃO -------------------------------------------------
+    try {
+      const resposta = await fetch("http://localhost:3000/contribuicoes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          metaId: meta,
+          usuarioId: usuarioLogado.id,
+          valor,
+          data: datahora,
+        }),
+      });
+      if (!resposta.ok) {
+        throw new Error("Erro ao registrar contribuição");
+      }
+      
+
+      // ALTERANDO STATUS DA META, SE NECESSÁRIO ---------------------------------------------
+      // Calcula o novo saldo da meta após a contribuição
+      const saldoMetaAtualizado = (saldoMeta || 0) + valor;
+      const diferenca = Math.abs(saldoMetaAtualizado - valorAlvoMeta);
+      // Verifica se o saldo atualizado é maior ou igual ao valor alvo, considerando uma margem de erro para números decimais
+      if (saldoMetaAtualizado >= valorAlvoMeta || diferenca < 0.01) {
+        const respPatchMeta = await fetch(`http://localhost:3000/metas/${meta}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "Concluída" }),
+        });
+        if (!respPatchMeta.ok) console.error('Falha ao atualizar status da meta', await respPatchMeta.text());
+      }
+
+
+      // ATUALIZANDO SALDO DO USUÁRIO -------------------------------------------------
+      const saldoCalculado = (Number(saldoDoUsuario) || Number(usuarioLogado.saldoUsuario) || 0) - Number(valor);
+      
+      // Pro saldo não ficar negativo (mínimo 0)
+  const saldoUsuarioAtualizado = saldoCalculado < 0 ? 0 : saldoCalculado;
+      setSaldoDoUsuario(saldoUsuarioAtualizado);
+      const respostaAlterarSaldo = await fetch(`http://localhost:3000/usuarios/${usuarioLogado.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ saldoUsuario: saldoUsuarioAtualizado }),
+      });
+      if (!respostaAlterarSaldo.ok) {
+        console.error('Falha ao atualizar usuário', await respostaAlterarSaldo.text());
+      } else {
+        // Atualiza o estado local do usuário antes de re-logar para garantir que o contexto receba o novo saldo
+        const usuarioAtualizado = { ...usuario, saldoUsuario: saldoUsuarioAtualizado };
+        setUsuario(usuarioAtualizado);
+        // refresh do contexto: faz logout e login com o usuário atualizado
+        try {
+          logout();
+          login(usuarioAtualizado);
+        } catch (e) {
+          console.warn('Erro ao reiniciar sessão para atualizar contexto:', e);
+        }
+      }
+      
+
+      const metaContribuidaData = metasUsuario.find((m) => m.id === meta);
+      setMetaContribuida(metaContribuidaData?.titulo || "");
+      setValorAlvoMeta(metaContribuidaData?.valorAlvo || 0);
+      
+      setMostrarMensagemContribuicao(true);
+      setTimeout(() => setMostrarMensagemContribuicao(false), 3000);
+      
+    } catch (error) {
+      console.error("Erro ao registrar contribuição:", error);
+    } finally {
+      reset();
+    }
+  }
+
+  // RENDERIZAÇÃO DO COMPONENTE -------------------------------------------------
   return (
     <div>
       < Header />
@@ -257,11 +287,8 @@ export default function Contribuir() {
               validate: {
                 maiorQueZero: (v) => v > 0 || "Verifique o valor informado",
                 menorQueValorAlvo: (v) =>
-                  v <= (valorAlvoMeta - saldoMeta) || `O valor não pode ser maior que R$ ${(valorAlvoMeta - saldoMeta).toFixed(2)}`,
-              },
-            })}
+                  v <= (valorAlvoMeta - saldoMeta) || `O valor não pode ser maior que ${(valorAlvoMeta - saldoMeta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2,maximumFractionDigits: 2 })}`},})}
           />
-
           {errors.valor && (
             <p className="text-red-500 text-sm mt-1">{errors.valor.message}</p>
           )}
