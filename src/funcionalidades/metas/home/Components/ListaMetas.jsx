@@ -95,7 +95,7 @@ export default function ListaMetas() {
                     })}
                 </ul>
             ) : (
-                <p>Você ainda não possui metas cadastradas.</p>
+                <p className="space-y-4 mx-4 italic">Você ainda não possui metas cadastradas.</p>
             )}
         </div>
     );

@@ -24,9 +24,9 @@ valor-alvo, data de conclusão e gerando um link de convite.
 🔶 RF_03: Adesão à Meta
 O sistema deve permitir que um usuário, por meio de um link de convite, visualize os detalhes de uma
 meta e confirme sua participação nela.
-⚪ FAZER: [Front-end] Criar página de "convite" que exibe detalhes da meta para não-membros - através do ID.
-🟡 FAZER: [Front-end] Implementar botão/ação de "Confirmar Participação".
-🟡 FAZER: [Back-end] Criar endpoint para adicionar o usuário à meta - push array "idParticipantes".
+✅ FAZER: [Front-end] Criar página de "convite" que exibe detalhes da meta para não-membros - através do ID.
+✅ FAZER: [Front-end] Implementar botão/ação de "Confirmar Participação".
+✅ FAZER: [Back-end] Criar endpoint para adicionar o usuário à meta
 
 🔶 RF_04: Visualizar Detalhes da Meta
 O sistema deve permitir que os participantes visualizem o progresso geral, o valor da contribuição
@@ -51,9 +51,9 @@ mudanças.
 O sistema deve permitir que o líder da meta remova um participante do grupo, acionando as regras de
 penalidade.
 🟡 FAZER: [Front-end] Adicionar botão "Remover" na lista de integrantes (visível apenas para o
-líder). - o lider é o "idParticipantes" indice 0 o primeiro a ser listado.
+líder)
 🟡 FAZER: [Back-end] Criar endpoint DELETE /meta/:id/participante/:userId .
-🟡 FAZER: [Back-end] Implementar validação de permissão (verificar se o solicitante é o líder - indice 0 do idParticipante).
+🟡 FAZER: [Back-end] Implementar validação de permissão (verificar se o solicitante é o líder
 
 🔶 RF_07: Aplicar Regra de Penalidade
 Ao remover um participante, o sistema deve calcular a penalidade (ex: 20% do valor já contribuído) e

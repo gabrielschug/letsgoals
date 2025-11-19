@@ -4,6 +4,7 @@ import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/usuarioContext";
+import FormatarReais from "../../components/Layout/FormatarReais";
 
 export default function PerfilUsuario() {
     const { id } = useParams();
@@ -109,6 +110,12 @@ export default function PerfilUsuario() {
                         <div className="mt-2">
                             <p>
                                 <strong>Email:</strong> {usuario.emailUsuario}
+                            </p>
+                        </div>
+
+                        <div className="mt-2">
+                            <p>
+                                <strong>Saldo em conta:</strong> <FormatarReais valor={usuario.saldoUsuario} />
                             </p>
                         </div>
 
