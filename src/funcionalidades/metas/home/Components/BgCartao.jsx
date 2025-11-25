@@ -82,8 +82,8 @@ export default function BgCartao() {
             />
           ) : (
             // Fallback visual (círculo vazio) se não tiver dados
-            <div className="w-24 h-24 rounded-full border-4 border-white/20 flex items-center justify-center text-xs opacity-50">
-              Sem dados
+            <div className="w-24 h-24 rounded-full border-4 border-white/20 flex items-center justify-center text-xs opacity-50 text-center">
+              Sem contribuições
             </div>
           )}
         </div>

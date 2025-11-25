@@ -171,7 +171,7 @@ export function MetaDetalhes() {
                     alt={meta.titulo}
                     className={`w-32 h-32 object-cover rounded-md mb-4 ${meta.status === "Concluída" ? "border-4 border-verde" : ""}`}
                 />
-                {meta.status === "Concluída" && <p><strong>Status: {meta.status}</strong></p>}
+                {meta.status === "Concluída" && <p><strong>Status: <span className="bg-verdeescuro px-3 py-1 rounded-full text-white">{meta.status}</span></strong></p>}
                 <p><strong>Valor Alvo:</strong> <FormatarReais valor={meta.valorAlvo} /></p>
                 <p><strong>Contribuído:</strong> <FormatarReais valor={totalContribuido} />
                 {contribuicoesdePenalidades > 0 && (
